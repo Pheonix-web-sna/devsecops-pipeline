@@ -1,0 +1,8 @@
+name: "CodeQL Security Configuration"
+
+paths:
+  - app.py
+  - templates
+
+queries:
+  - uses: security-extended

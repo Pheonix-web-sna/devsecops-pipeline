@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevSecOps CI/CD Security Pipeline Lab</title>
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --card-border: #334155;
+            --accent-cyan: #06b6d4;
+            --accent-rose: #f43f5e;
+            --accent-emerald: #10b981;
+            --accent-amber: #f59e0b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            padding: 30px 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 20px;
+        }
+
+        .badge-warning {
+            display: inline-block;
+            background: rgba(244, 63, 94, 0.15);
+            color: var(--accent-rose);
+            border: 1px solid var(--accent-rose);
+            border-radius: 6px;
+            padding: 4px 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        p.lead {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 20px;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .card:hover {
+            border-color: var(--accent-cyan);
+            transform: translateY(-2px);
+        }
+
+        .card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .tag-sast { color: var(--accent-amber); font-size: 0.8rem; border: 1px solid var(--accent-amber); padding: 2px 8px; border-radius: 4px; }
+        .tag-sca { color: var(--accent-cyan); font-size: 0.8rem; border: 1px solid var(--accent-cyan); padding: 2px 8px; border-radius: 4px; }
+        .tag-iac { color: #a855f7; font-size: 0.8rem; border: 1px solid #a855f7; padding: 2px 8px; border-radius: 4px; }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+        }
+
+        .endpoint-link {
+            display: inline-block;
+            text-decoration: none;
+            background: #2563eb;
+            color: white;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 0.88rem;
+            font-weight: 500;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        .endpoint-link.vuln {
+            background: rgba(244, 63, 94, 0.2);
+            color: var(--accent-rose);
+            border: 1px solid var(--accent-rose);
+        }
+
+        .endpoint-link.safe {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--accent-emerald);
+            border: 1px solid var(--accent-emerald);
+        }
+
+        .pipeline-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .pipeline-table th, .pipeline-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--card-border);
+            font-size: 0.9rem;
+        }
+
+        .pipeline-table th {
+            background: #111827;
+            color: var(--accent-cyan);
+            font-weight: 600;
+        }
+
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--card-border);
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <span class="badge-warning">LABORATORY TESTING ENVIRONMENT ONLY &bull; BIND: 127.0.0.1</span>
+            <h1>DevSecOps CI/CD Security Pipeline</h1>
+            <p class="lead">Interactive college project testing bench demonstrating SAST, SCA, Secret Scanning, and IaC security tooling in GitHub Actions.</p>
+        </header>
+
+        <section class="grid">
+            <div class="card">
+                <h2>1. SQL Injection Demo <span class="tag-sast">SAST / DAST</span></h2>
+                <p>Demonstrates raw string query concatenation vs parameterized query defense. Target for <strong>Bandit</strong> (B608) and <strong>CodeQL</strong>.</p>
+                <div>
+                    <a class="endpoint-link vuln" href="/api/vulnerable/users?role=%27+OR+%271%27=%271" target="_blank">Test Vulnerable SQLi</a>
+                    <a class="endpoint-link safe" href="/api/secure/users?role=developer" target="_blank">Test Secure SQL</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>2. Reflected XSS Demo <span class="tag-sast">SAST</span></h2>
+                <p>Demonstrates raw unescaped HTML reflection vs Jinja2 template auto-escaping. Target for <strong>Bandit</strong> (B701) and <strong>CodeQL</strong>.</p>
+                <div>
+                    <a class="endpoint-link vuln" href="/vulnerable/greet?name=%3Cscript%3Ealert(%27XSS%27)%3C/script%3E" target="_blank">Test Vulnerable XSS</a>
+                    <a class="endpoint-link safe" href="/secure/greet?name=Student" target="_blank">Test Secure Greet</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>3. Fictional Hardcoded Secrets <span class="tag-sast">SECRETS</span></h2>
+                <p>Fictional AWS keys and passwords placed in source code to test detection by <strong>Gitleaks</strong> and <strong>Bandit</strong>.</p>
+                <div>
+                    <a class="endpoint-link safe" href="/health" target="_blank">Check Service Health</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>4. Dependency Scanning <span class="tag-sca">SCA</span></h2>
+                <p>Dependencies in <code>requirements.txt</code> pinned to outdated versions with known CVEs. Target for <strong>pip-audit</strong> and <strong>Trivy</strong>.</p>
+                <p><small>Remediation: Upgrade to modern Flask & requests in production.</small></p>
+            </div>
+        </section>
+
+        <section>
+            <h2 style="margin-bottom: 10px;">Security Pipeline Scanner Matrix</h2>
+            <table class="pipeline-table">
+                <thead>
+                    <tr>
+                        <th>Scanner</th>
+                        <th>Scan Category</th>
+                        <th>Target in Project</th>
+                        <th>Expected Finding Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Bandit</strong></td>
+                        <td>Python SAST</td>
+                        <td><code>app.py</code></td>
+                        <td>Hardcoded credentials (B105/B106), SQL injection (B608)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>pip-audit</strong></td>
+                        <td>SCA (Dependencies)</td>
+                        <td><code>requirements.txt</code></td>
+                        <td>Known CVEs in pinned package versions</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Gitleaks</strong></td>
+                        <td>Secret Detection</td>
+                        <td>Git Repository history & files</td>
+                        <td>Committed AWS / API keys and high-entropy secrets</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Checkov</strong></td>
+                        <td>IaC Security</td>
+                        <td><code>terraform/main.tf</code></td>
+                        <td>Public S3 bucket, open 0.0.0.0/0 ingress, unencrypted storage</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Trivy</strong></td>
+                        <td>Filesystem & Container</td>
+                        <td><code>Dockerfile</code>, Workspace root</td>
+                        <td>Running as root user, base image vulnerabilities</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GitHub CodeQL</strong></td>
+                        <td>Deep Code Analysis</td>
+                        <td>Python Codebase</td>
+                        <td>Taint tracking for SQL injection and XSS queries</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <footer>
+            <p>DevSecOps College Project &bull; Safe Laboratory Implementation &bull; Localhost Only</p>
+        </footer>
+    </div>
+</body>
+</html>

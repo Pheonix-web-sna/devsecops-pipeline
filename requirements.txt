@@ -1,0 +1,18 @@
+# ==============================================================================
+# REQUIREMENTS - DEVSECOPS CI/CD SECURITY PIPELINE LAB
+# ==============================================================================
+# NOTE: Deliberately pinned versions are used for academic & scanning demonstration.
+# - Flask 2.0.1 / Werkzeug 2.0.1: Flagged by pip-audit & Trivy (e.g. CVE-2023-30861, CVE-2023-46136)
+# - requests 2.25.1: Flagged for CVE-2023-32681
+# 
+# SECURE REMEDIATION FOR PRODUCTION:
+# Upgrade to:
+# Flask>=3.0.0
+# Werkzeug>=3.0.1
+# requests>=2.31.0
+# ==============================================================================
+Flask==2.0.1
+Werkzeug==2.0.1
+Jinja2==3.0.1
+requests==2.25.1
+pytest==7.4.4
